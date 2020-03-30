@@ -1,0 +1,25 @@
+/******************************************************************************
+ *
+ * Codezilla PHP Framework
+ * Author  : Nathan O'Brennan
+ * Email   : nathan@codezilla.xyz
+ * Date    : Tue February 01 12:20:37 MST 2017
+ * Website : https://codezilla.xyz
+ * Version : 1.0
+ *
+******************************************************************************/
+
+/* The following is the Framework specific CSS styles */
+p.error-message {
+    margin-top: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 10px;
+    font-weight: 900;
+    font-size: 1.2rem;
+    font-style: italic;
+    background-color: #FFFFFF;
+    color: #000000;
+    border: solid #73879c 1px;
+    line-height: 400%;
+}

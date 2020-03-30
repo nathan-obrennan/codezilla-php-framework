@@ -1,0 +1,18 @@
+/*
+ * Error Codes
+ *
+ * 000 = System has not been configured, config_ipaddress is null, _install exists but framework_recovery is missing. Reinstall the framework.
+ * 001 = System has not been configured, config_ipaddress is null, _install directory does not exist. Reinstall the framework.
+ * 002 = System has not been configured, config_ipaddress is set, _install exists but framework_config is missing. Reinstall the framework.
+ * 003 = System has not been configured, config_ipaddress is set, _install directory does not exist. Reinstall the framework.
+ * 004 = System has not been configured, config_ipaddress is set, client IP does not match. Configuration in progress?
+ * 005 = System configured, environment found, no dbtype, client IP matches, _install exists but framework_recovery is missing. Reinstall the framework.
+ * 006 = System configured, environment found, no dbtype, client IP matches, _install does not exist. Reinstall the framework.
+ * 007 = System configured, environment found, no dbtype, client ip does not match.
+ * 008 = System configured, environment not found, client IP match, _install exists but framework_config is missing. Reinstall the framework.
+ * 009 = System configured, environment not found, client IP match, _install does not exist. Reinstall the framework.
+ * 010 = System configured, environment not found, client IP does not match.
+ * 011 = Environment corrupt, client IP match, _install exists but framework_config is missing. Reinstall the framework.
+ * 012 = Environment corrupt, client IP match, _install does not exist. Reinstall the framework.
+ * 013 = Environment corrupt, client IP does not match.
+ * 014 = Environment configured correctly, Database failed to connect.

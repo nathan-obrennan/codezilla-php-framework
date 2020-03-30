@@ -1,0 +1,67 @@
+# Framework Site Specific Files #
+#################################
+TODO
+common/images/user_avatars/*
+!common/images/user_avatars/generic.png
+
+# Ignore src/ as it contains the initial database
+# configurations necessary for creation of the system
+# and we don't want those to get out without a valid license
+# key for purchasers!
+system/_install/src/*
+
+# Ignore the modules directory as this is where
+# the application should reside, except the welcome module
+# which is the default (example) module
+modules/*
+!modules/welcome/
+
+# Ignore the plugins directory so we don't over write
+# custom plugins
+plugins/*
+!plugins/index.php
+
+# ignore plugins and modules in the vendors folder
+common/vendors/*
+!common/vendors/index.php
+common/themes/admin/*
+!common/themes/admin/index.php
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+*.db
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
