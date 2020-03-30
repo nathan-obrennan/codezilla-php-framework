@@ -24,8 +24,7 @@ plugins/*
 # ignore plugins and modules in the vendors folder
 common/vendors/*
 !common/vendors/index.php
-common/themes/admin/*
-!common/themes/admin/index.php
+!common/vendors/PHPMailer/*
 
 # Compiled source #
 ###################
