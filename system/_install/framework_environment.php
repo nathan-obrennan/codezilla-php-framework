@@ -223,6 +223,48 @@ class EnvironmentConfig extends Codezilla
                                         }
                                     }
                                 }
+                                else {
+                                    // The default source code does not come with the mysql source
+                                    $data = array();
+                                    $data['database_type'] = $_SESSION['CONFIGURATION']['CONFIG']['database']['dbtype'];
+                                    $data['codezilla_token'] = $this->codezilla_token;
+                                    //show($data);
+
+                                    if ($response = $this->curlPost('https://codezilla.xyz/api/codezilla-framework-database/', $data)) {
+                                        //show($response);
+                                        $result = json_decode($response);
+                                        $database = $result->download;
+                                        if ($this->curlDownload('https://codezilla.xyz/api/codezilla-framework-database/download.php?id='.$result->download, $database)) {
+                                            if (file_exists($database)) {
+                                                $xsum = hash_file('sha256', $database);
+                                                show($xsum);
+                                                show($result->sha256sum);
+                                                if ($xsum === $result->sha256sum) {
+                                                    echo 'signatures match<br>';
+                                                    $codezilladb = SYSTEM . DIRECTORY_SEPARATOR . '_install' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'codezilla.sql';
+                                                    echo "Moving $database to $codezilladb".'<br>';
+                                                    //echo 'filesize: '.filesize($database).'<br>';
+                                                    if (rename($database, $codezilladb)) {
+                                                        //echo 'filesize: '.filesize($codezilladb).'<br>';
+                                                        sleep(2); // Windows will complain the file doesn't exist in the next step so we give it a moment to collect its thoughts #windowssucks
+                                                        $ysum = hash_file('sha256', $codezilladb);
+                                                        //show($xsum);
+                                                        //show($ysum);
+                                                        if ($xsum === $ysum) {
+                                                            echo 'File successfully moved.<br>';
+                                                            echo 'Redirecting in 3 seconds ...';
+                                                            refresh(3);
+                                                            die;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    message('Trying to download the database configuration script');
+                                    refresh('10');
+                                    die;
+                                }
                             }
                             else {
                                 // just refresh
@@ -274,7 +316,7 @@ class EnvironmentConfig extends Codezilla
                             }
                         }
                         else {
-                            die('The necessary sqlite database does not exist. YOu have an incomplete installation.');
+                            die('The necessary sqlite database does not exist. You have an incomplete installation.');
                         }
                     }
                     else {

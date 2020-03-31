@@ -132,6 +132,15 @@ class Recovery extends Codezilla
             }
         }
 
+        if (isset($_SESSION['recovery_keys'])) {
+            $keys = explode(':', $_SESSION['recovery_keys']);
+            $recovery_key_1 = $keys[0];
+            $recovery_key_2 = $keys[1];
+            $recovery_key_3 = $keys[2];
+            $recovery_key_4 = $keys[3];
+            $_SESSION['recovery_code'] = $recovery_key_1;
+        }
+
         (isset($_SESSION['recovery_code']))
             ? $recovery_code = $_SESSION['recovery_code']
             : $recovery_code = null;
@@ -141,8 +150,14 @@ class Recovery extends Codezilla
             <table class="table">
                 <thead>
                     <td>
-                        <h2></h2>
                         <p>Let's begin the installation. To ensure the proper party is controlling the configuration, please enter one of the recovery codes provided. Once the code is verified your IP Address will be stored and configuration will proceed. Configuration will only be allowed from the stored IP Address unless another recovery code is entered.</p>
+                        <p>Upon creation of your Vault four recovery keys were provided. Please store these for future recovery needs.</p>
+                        <ul>
+                            <li><?php echo $recovery_key_1; ?></li>
+                            <li><?php echo $recovery_key_2; ?></li>
+                            <li><?php echo $recovery_key_3; ?></li>
+                            <li><?php echo $recovery_key_4; ?></li>
+                        </ul>
                     </td>
                 </thead>
                 <tbody>

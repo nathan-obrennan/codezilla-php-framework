@@ -188,14 +188,14 @@ $code->loadClass('Router', null, array('input'));
  *  modules
  *
 ******************************************************************************/
-//if ($code->maintenance) {
-//    if (!$code->isSuperAdmin()) {
-//        if (!$code->isEmergencyOverride()) {
-//            refresh(30, 'The system is currently down for maintenance. Please try again later...');
-//            die();
-//        }
-//    }
-//}
+if ($code->maintenance) {
+    if (!$code->isSuperAdmin()) {
+        if (!$code->isEmergencyOverride()) {
+            refresh(30, 'The system is currently down for maintenance. Please try again later...');
+            die();
+        }
+    }
+}
 
 /******************************************************************************
  *

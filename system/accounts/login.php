@@ -84,4 +84,12 @@ if (isset($_SESSION['messages'])) {
                         </div>
                     </form>
                 </section>
-            </div>
+            </div>            </div>
+        </div>
+        <?php
+            echo PHP_EOL; // source formatting
+            // load the css files
+            $this->loadJs();
+        ?>
+    </body>
+</html>

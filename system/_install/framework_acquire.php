@@ -85,15 +85,12 @@ class Acquire extends Codezilla
             $data['registration_email'] = $this->registration_email;
             $data['activation_code']    = $this->activation_code;
             //show($data);
+
             if ($response = $this->curlPost('https://codezilla.xyz/api/codezilla-framework-activation/', $data)) {
                 //show($response);
-
-                // we will need to check the response and display any error messages
-                // or destroy the session and start over if something is wrong...
-                // FIX ME
-
                 $result = json_decode($response);
                 $database = $result->download;
+                $_SESSION['recovery_keys'] = $result->recovery_keys;
                 if ($this->curlDownload('https://codezilla.xyz/api/codezilla-framework-activation/download.php?id='.$result->download, $database)) {
                     if (file_exists($database)) {
                         $xsum = hash_file('sha256', $database);
@@ -113,8 +110,8 @@ class Acquire extends Codezilla
                                 if ($xsum === $ysum) {
                                     echo 'File successfully moved.<br>';
                                     echo 'Redirecting in 3 seconds ...';
-                                    if (session_id())
-                                        session_destroy();
+                                    //if (session_id())
+                                    //    session_destroy();
                                     refresh(3);
                                 }
                                 else {
@@ -128,6 +125,8 @@ class Acquire extends Codezilla
             }
             else {
                 message('The data could not be validated. A system error may have occured, please try again in a few minutes.');
+                session_unset();
+                session_destroy();
             }
         }
         else {

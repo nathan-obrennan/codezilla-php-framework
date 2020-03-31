@@ -62,6 +62,18 @@ if (defined('STDIN')) {
     chdir(dirname(__FILE__));
 }
 
+define('DS', DIRECTORY_SEPARATOR);
+// Configure our BASE and SYSTEM paths for modules
+$system_path = 'system';
+
+if (($_temp = realpath($system_path)) !== FALSE) {
+    $system_path = $_temp . DIRECTORY_SEPARATOR;
+}
+else {
+    // Ensure there's a trailing slash
+    $system_path = strtr(rtrim($system_path, '/\\'), '/\\', DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+}
+
 // Configure basic file system paths
 $doc_root = dirname(__FILE__);
 if (!is_dir($doc_root)) {
@@ -71,7 +83,8 @@ if (!is_dir($doc_root)) {
 }
 
 define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
-define('BASEPATH', $doc_root);
+define('SYSTEM_PATH', $system_path);
+define('BASEPATH', dirname($system_path));
 define('CORE',      BASEPATH . DIRECTORY_SEPARATOR . 'core');
 define('COMMON',    BASEPATH . DIRECTORY_SEPARATOR . 'common');
 define('CONFIG',    CORE     . DIRECTORY_SEPARATOR . 'config');
@@ -80,28 +93,6 @@ define('SYSTEM',    BASEPATH . DIRECTORY_SEPARATOR . 'system');
 define('MODULES',   BASEPATH . DIRECTORY_SEPARATOR . 'modules');
 define('PLUGINS',   BASEPATH . DIRECTORY_SEPARATOR . 'plugins');
 define('VENDORS',   COMMON   . DIRECTORY_SEPARATOR . 'vendors');
-
-// if you want to see what is being built here
-//echo '<br>SELF:     '.SELF;      // index.php
-//echo '<br>BASEPATH: '.BASEPATH;  // /var/www/html
-//echo '<br>CORE:     '.CORE;      // /var/www/html/core
-//echo '<br>CONFIG:   '.CONFIG;    // /var/www/html/core/config
-//echo '<br>CLASSES:  '.CLASSES;   // /var/www/html/core/classes
-//echo '<br>SYSTEM:   '.SYSTEM;    // /var/www/html/system
-//echo '<br>MODULES:  '.MODULES;   // /var/www/html/modules
-//echo '<br>PLUGINS:  '.PLUGINS;   // /var/www/html/plugins
-//echo '<br>COMMON:   '.COMMON;    // /var/www/html/common
-//die;
-
-// For testing during development, keep this handy
-// Uncomment the following to automatically download the vault
-//if (!session_id()) {
-//    session_name('Codezilla');
-//    session_start();
-//}
-//$_SESSION['registration_email']     = 'jimcrow@gmail.com';
-//$_SESSION['activation_code']        = '20190822-173932-XXX000-XX00XX00-000-XXX';
-//$_SESSION['recovery_code']          = 'KMyEowML3ctjYi';
 
 /******************************************************************************
  *
