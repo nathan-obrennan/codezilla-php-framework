@@ -386,8 +386,8 @@ class EnvironmentConfig extends Codezilla
                     if ($this->curlDownload('https://codezilla.xyz/api/codezilla-framework-database/download.php?id='.$result->download, $database)) {
                         if (file_exists($database)) {
                             $xsum = hash_file('sha256', $database);
-                            show($xsum);
-                            show($result->sha256sum);
+                            //show($xsum);
+                            //show($result->sha256sum);
                             if ($xsum === $result->sha256sum) {
                                 echo 'signatures match<br>';
                                 $codezilladb = SYSTEM . DIRECTORY_SEPARATOR . '_install' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'codezilla_mysql.sql';
@@ -407,7 +407,15 @@ class EnvironmentConfig extends Codezilla
                                         refresh(3);
                                         die;
                                     }
+                                    else {
+                                        unlink($codezilladb);
+                                        message('The file was corrupted while renaming. Please download again.');
+                                    }
                                 }
+                            }
+                            else {
+                                unlink($database);
+                                message('File failed to download. Please try again.');
                             }
                         }
                     }
