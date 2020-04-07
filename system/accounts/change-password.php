@@ -14,6 +14,11 @@ if (isset($this->input->xss->redirect)) {
     $this->storage->set('redirect', $this->input->xss->redirect);
 }
 
+if (!$this->users->isLoggedIn()) {
+    message('You were trying to change your password while not logged in. Clearing cache to start over.');
+    redirectTo(HTTP_HOST.'/accounts/logout.html');
+}
+
 if ($this->storage->keyExists('userEmail')) {
     $userEmail = $this->storage->decrypt('userEmail');
 }
