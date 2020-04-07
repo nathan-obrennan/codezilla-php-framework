@@ -390,6 +390,9 @@ class EnvironmentConfig extends Codezilla
                             //show($result->sha256sum);
                             if ($xsum === $result->sha256sum) {
                                 echo 'signatures match<br>';
+                                $codezilladb = SYSTEM . DIRECTORY_SEPARATOR . '_install' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
+                                // make sure the directory exists
+                                mkdir($codezilladb, 755, true);
                                 $codezilladb = SYSTEM . DIRECTORY_SEPARATOR . '_install' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'codezilla_mysql.sql';
                                 echo "Moving $database to $codezilladb".'<br>';
                                 //echo 'filesize: '.filesize($database).'<br>';
