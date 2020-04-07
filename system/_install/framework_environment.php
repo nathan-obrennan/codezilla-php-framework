@@ -412,6 +412,11 @@ class EnvironmentConfig extends Codezilla
                                         message('The file was corrupted while renaming. Please download again.');
                                     }
                                 }
+                                else {
+                                    unlink($codezilladb);
+                                    unlink($databse);
+                                    message('Failed to rename database file');
+                                }
                             }
                             else {
                                 unlink($database);
