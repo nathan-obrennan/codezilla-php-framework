@@ -63,8 +63,8 @@ if (isset($_SESSION['messages'])) {
                             <p>
                                 ** Our Promise to you ** <br />
                                 We need your email so we can send you a notification when your requrested items have been delivered.
-                                With your permission, we will also send you a notification when our newest product list is available. Otherwise,
-                                we promise to only contact you via email only when necessary do to shipment or order needs.
+                                With your permission, we will also send you a notification when our newest product list is available. We will not spam you, nor
+                                will we ever sell your email address.
                             </p>
                             <div class="clearfix"></div>
                             <br />

@@ -22,7 +22,7 @@ if ($this->storage->keyExists('redirect')) {
 }
 
 $this->page_name = 'Logout';
-$this->loadView(array('head', 'footer'));
+$this->loadView(array('head'));
 ?>
 <body class="login">
     <div>

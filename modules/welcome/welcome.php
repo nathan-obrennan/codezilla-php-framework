@@ -35,4 +35,7 @@ else {
     redirectTo(HTTP_HOST.'/accounts/login.html');
 }
 echo '</ul>';
-$this->loadView('footer');
+     echo PHP_EOL; // source formatting
+    // load the css files
+    $this->loadJs();
+?>

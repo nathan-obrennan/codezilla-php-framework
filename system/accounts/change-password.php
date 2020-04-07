@@ -57,5 +57,8 @@ if (isset($_SESSION['messages'])) {
         </div>
     </div>
 </body>
-<?php
-$this->loadView('footer');
+ <?php
+    echo PHP_EOL; // source formatting
+    // load the css files
+    $this->loadJs();
+?>
