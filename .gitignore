@@ -9,6 +9,7 @@ common/images/user_avatars/*
 # and we don't want those to get out without a valid license
 # key for purchasers!
 system/_install/src/*
+!system/_install/src/index.php
 
 # Ignore the modules directory as this is where
 # the application should reside, except the welcome module
