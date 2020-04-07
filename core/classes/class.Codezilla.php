@@ -259,6 +259,9 @@ class Codezilla
                 'analytics',
                 'email_domains',
                 'config_ipaddress',
+                'registration_email',
+                'activation_code',
+                'codezilla_token',
                 'config_status'
             );
             $query['from'] = 'configuration';

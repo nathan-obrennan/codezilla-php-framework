@@ -80,6 +80,9 @@ class EnvironmentConfig extends Codezilla
                         }
                     }
                 }
+                (isset($_POST['initialize_tables']))
+                    ? $_SESSION['CONFIGURATION']['initialize_tables'] = 1
+                    : $_SESSION['CONFIGURATION']['initialize_tables'] = 0;
             }
         }
 
@@ -206,10 +209,11 @@ class EnvironmentConfig extends Codezilla
                         // Step 6 needs to connect to the database.
                         // Attempt to establish a connection and then offer to use existing database or initialize new tables
                         if ($_SESSION['CONFIGURATION']['STEP'] == 6) {
-                            if (isset($_POST['initialize_tables'])) {
+                            if ($_SESSION['CONFIGURATION']['initialize_tables']) {
                                 if (file_exists(SYSTEM . DIRECTORY_SEPARATOR . '_install' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'codezilla_mysql.sql')) {
                                     if ($initialize = file_get_contents(SYSTEM . DIRECTORY_SEPARATOR . '_install' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'codezilla_mysql.sql')) {
                                         if ($this->database->initial_config()) {
+                                            $_SESSION['CONFIGURATION']['STEP'] = 8;
                                             refresh(5, 'Database configuration complete');
                                         }
                                         else {
@@ -224,51 +228,15 @@ class EnvironmentConfig extends Codezilla
                                     }
                                 }
                                 else {
-                                    // The default source code does not come with the mysql source
-                                    $data = array();
-                                    $data['database_type'] = $_SESSION['CONFIGURATION']['CONFIG']['database']['dbtype'];
-                                    $data['codezilla_token'] = $this->codezilla_token;
-                                    //show($data);
-
-                                    if ($response = $this->curlPost('https://codezilla.xyz/api/codezilla-framework-database/', $data)) {
-                                        //show($response);
-                                        $result = json_decode($response);
-                                        $database = $result->download;
-                                        if ($this->curlDownload('https://codezilla.xyz/api/codezilla-framework-database/download.php?id='.$result->download, $database)) {
-                                            if (file_exists($database)) {
-                                                $xsum = hash_file('sha256', $database);
-                                                show($xsum);
-                                                show($result->sha256sum);
-                                                if ($xsum === $result->sha256sum) {
-                                                    echo 'signatures match<br>';
-                                                    $codezilladb = SYSTEM . DIRECTORY_SEPARATOR . '_install' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'codezilla.sql';
-                                                    echo "Moving $database to $codezilladb".'<br>';
-                                                    //echo 'filesize: '.filesize($database).'<br>';
-                                                    if (rename($database, $codezilladb)) {
-                                                        //echo 'filesize: '.filesize($codezilladb).'<br>';
-                                                        sleep(2); // Windows will complain the file doesn't exist in the next step so we give it a moment to collect its thoughts #windowssucks
-                                                        $ysum = hash_file('sha256', $codezilladb);
-                                                        //show($xsum);
-                                                        //show($ysum);
-                                                        if ($xsum === $ysum) {
-                                                            echo 'File successfully moved.<br>';
-                                                            echo 'Redirecting in 3 seconds ...';
-                                                            refresh(3);
-                                                            die;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    message('Trying to download the database configuration script');
-                                    refresh('10');
-                                    die;
+                                    // if the sql source file does not exist, then push back a step
+                                    // because it iterates when the process begins and we need to come back here.
+                                    $_SESSION['CONFIGURATION']['STEP'] = 7;
+                                    refresh('0',null);
                                 }
                             }
                             else {
                                 // just refresh
-                                $_SESSION['CONFIGURATION']['STEP'] = 7;
+                                $_SESSION['CONFIGURATION']['STEP'] = 8;
                                 refresh('0',null);
                             }
                         }
@@ -325,12 +293,12 @@ class EnvironmentConfig extends Codezilla
                         // initialize the tables, otherwise we need to reboot and move on
                         if ($_SESSION['CONFIGURATION']['STEP'] == 6) {
 
-                            if (isset($_POST['initialize_tables'])) {
+                            if ($_SESSION['CONFIGURATION']['initialize_tables']) {
                                 die('initializing the tables...');
                             }
                             else {
                                 // just refresh
-                                $_SESSION['CONFIGURATION']['STEP'] = 7;
+                                $_SESSION['CONFIGURATION']['STEP'] = 8;
                                 refresh('0',null);
                             }
                         }
@@ -402,7 +370,54 @@ class EnvironmentConfig extends Codezilla
                 $update['where']['domains'] = array('id' => 1);
                 $this->vault->update($update);
             }
+            // This step acquires the sql source code
             if ($_SESSION['CONFIGURATION']['STEP'] == 7) {
+                // The default source code does not come with the mysql schema
+                $data = array();
+                $data['database_type'] = $_SESSION['CONFIGURATION']['CONFIG']['database']['dbtype'];
+                $data['database_prefix'] = $_SESSION['CONFIGURATION']['CONFIG']['database']['dbprefix'];
+                $data['codezilla_token'] = $this->codezilla_token;
+                //show($data);
+
+                if ($response = $this->curlPost('https://codezilla.xyz/api/codezilla-framework-database/', $data)) {
+                    //show($response);
+                    $result = json_decode($response);
+                    $database = $result->download;
+                    if ($this->curlDownload('https://codezilla.xyz/api/codezilla-framework-database/download.php?id='.$result->download, $database)) {
+                        if (file_exists($database)) {
+                            $xsum = hash_file('sha256', $database);
+                            show($xsum);
+                            show($result->sha256sum);
+                            if ($xsum === $result->sha256sum) {
+                                echo 'signatures match<br>';
+                                $codezilladb = SYSTEM . DIRECTORY_SEPARATOR . '_install' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'codezilla_mysql.sql';
+                                echo "Moving $database to $codezilladb".'<br>';
+                                //echo 'filesize: '.filesize($database).'<br>';
+                                if (rename($database, $codezilladb)) {
+                                    //echo 'filesize: '.filesize($codezilladb).'<br>';
+                                    sleep(2); // Windows will complain the file doesn't exist in the next step so we give it a moment to collect its thoughts #windowssucks
+                                    $ysum = hash_file('sha256', $codezilladb);
+                                    //show($xsum);
+                                    //show($ysum);
+                                    if ($xsum === $ysum) {
+                                        // send back to step 6 for installation
+                                        $_SESSION['CONFIGURATION']['STEP'] = 6;
+                                        echo 'File successfully moved.<br>';
+                                        echo 'Redirecting in 3 seconds ...';
+                                        refresh(3);
+                                        die;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                $_SESSION['CONFIGURATION']['STEP'] = 5;
+                message('Trying to download the database configuration script');
+                refresh('10');
+                die;
+            }
+            if ($_SESSION['CONFIGURATION']['STEP'] == 8) {
                 /*
                  * Configuration Complete
                  *
