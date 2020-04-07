@@ -466,7 +466,7 @@ class Users
                             <a href='$verification_string'>$verification_string</a>
                             ".PHP_EOL;
                             $To = array($email_address => 'New Registration');
-                            $From = array($this->registration => 'New Registration');
+                            $From = array($this->registration => $this->site_name . ' New Registration');
 
                             $template = COMMON . '/templates/tmpl.email.registration.html';
                             $htmlbody = file_get_contents($template);
