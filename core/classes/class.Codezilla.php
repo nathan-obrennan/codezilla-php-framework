@@ -955,8 +955,18 @@ class Codezilla
     {
         if ($this->storage->keyExists('user')) {
             if ($user = $this->storage->decrypt('user')) {
-                if ($user->isSuperAdmin()) {
-                    return true;
+                if (is_object($user)) {
+                    // if a proper user object it will contain a method to test internally
+                    if (method_exists($user, 'isSuperAdmin')) {
+                        if ($user->isSuperAdmin()) {
+                            return true;
+                        }
+                    }
+                    // in some instances the object will contain the property only and not the method
+                    elseif (isset($user->isSuperAdmin)) {
+                        if ($user->isSuperAdmin)
+                            return true;
+                    }
                 }
             }
         }
