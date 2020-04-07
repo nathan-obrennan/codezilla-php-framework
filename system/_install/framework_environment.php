@@ -415,7 +415,7 @@ class EnvironmentConfig extends Codezilla
                                 else {
                                     unlink($codezilladb);
                                     unlink($databse);
-                                    message('Failed to rename database file');
+                                    message("Failed to rename database file '$database' to '$codezilladb'");
                                 }
                             }
                             else {
