@@ -52,11 +52,6 @@ class MySQLi_Adaptor
             }
         }
 
-        if (isset($debug)) {
-            if ($this->debug === false)
-                ($debug) ? $this->debug = true : $this->debug = false;
-        }
-
         if ($this->active()) {
             return true;
         }else {

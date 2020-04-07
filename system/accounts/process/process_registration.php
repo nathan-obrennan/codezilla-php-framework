@@ -10,7 +10,7 @@
  *
 ******************************************************************************/
 defined('BASEPATH') OR exit('No direct script access allowed');
-$this->debug = true;
+$this->debug = false;
 
 // examine the registerEmail and validate
 if (isset($this->input->xss->registerEmail)) {
