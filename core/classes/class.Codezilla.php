@@ -955,7 +955,6 @@ class Codezilla
     {
         if ($this->storage->keyExists('user')) {
             if ($user = $this->storage->decrypt('user')) {
-                show($user);
                 if ($user->isSuperAdmin()) {
                     return true;
                 }

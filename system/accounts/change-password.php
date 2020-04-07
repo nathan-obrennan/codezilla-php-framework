@@ -20,7 +20,7 @@ if ($this->storage->keyExists('userEmail')) {
 
 $this->loadCss('/common/themes/'.$this->site_theme.'/css/animate.min.css');
 
-$this->page_name = 'Registration';
+$this->page_name = 'Password Change';
 $this->loadView(array('head'));
 if (isset($_SESSION['messages'])) {
     if (count($_SESSION['messages']) > 0) {
