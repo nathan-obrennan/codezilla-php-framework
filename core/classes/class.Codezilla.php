@@ -501,9 +501,30 @@ class Codezilla
                     ? define('HTTP_SCHEME', 'https')
                     : define('HTTP_SCHEME', 'http');
 
+                // if we are operating in a subdirectory of the main docroot then we need to include that
+                // in the HTTP_HOST so automatic links and redirects will point to the correct location.
+                $subdir = '/';
+                if (DOCROOT !== BASEPATH)
+                {
+                    $subdir = '/' . SYSTEM_PATH . '/';
+                }
+
+                // When building out a URL link use HTTP_HOST . '/the/rest/of/your/link'
+                // to automatically use the site url.
                 ((!empty(HTTP_SCHEME)) && (!empty(DOMAIN)))
-                    ? define( 'HTTP_HOST', rtrim( HTTP_SCHEME .'://' . DOMAIN . '/', '/' ))
+                    ? define( 'HTTP_HOST', rtrim( HTTP_SCHEME .'://' . DOMAIN . $subdir, '/' ))
                     : halt('Framework bootstrap failure. Cannot properly define base url for system loading...');
+
+                /* In instances where the application is running from a subdirectory of the document root
+                 * you can use HTTP_HOME to link back to the primary website.
+                 * For example. Your primary website is https://domain.tld
+                 * this application lives in https://domain.tld/codezilla
+                 * you can create a link using <a href="<? echo HTTP_MASTER; ?>"> Real Home </a>
+                 * to back to https://domain.tld
+                 */
+                ($subdir != '/')
+                    ? define('HTTP_HOME', HTTP_HOST.'/../')
+                    : define('HTTP_HOME', HTTP_HOST);
 
                 // Simple fail safe to make sure all is in working order so far
                 // however, if the web server is serving via http and a front-end is serving via https
@@ -1165,6 +1186,12 @@ class Codezilla
                         $params .= $key.'="'.$val.'" ';
                     }
                 }
+
+                // if this is not a complete and valid url then add HTTP_HOST to it
+                // but this fails when someone shortcuts https://domain.tld with //domain.tld
+                if (filter_var($file, FILTER_VALIDATE_URL) == FALSE) {
+                    $file = HTTP_HOST . $file;
+                }
                 $styles .= '        <link rel="stylesheet" href="' . $file . $version .'" type="text/css" '.$params.'>'.PHP_EOL;
             }
             echo $styles;
@@ -1209,8 +1236,20 @@ class Codezilla
         if (is_null($script)) {
             $scripts = '';
             $version = '';
+            $version = '';
+            if (ENVIRONMENT !== 'production') {
+                // this forces browser caches to load the current version
+                // which is helpful during development, it appears to be a new
+                // file with every load
+                $version = '?v='.time();
+            }
             foreach($this->_loaded_js as $file) {
                 $this->_loaded_js[] = $file;
+                // if this is not a complete and valid url then add HTTP_HOST to it
+                // but this fails when someone shortcuts https://domain.tld with //domain.tld
+                if (filter_var($file, FILTER_VALIDATE_URL) == FALSE) {
+                    $file = HTTP_HOST . $file;
+                }
                 $scripts .= '       <script src="' . $file . $version .'"></script>'.PHP_EOL;
             }
             echo $scripts;

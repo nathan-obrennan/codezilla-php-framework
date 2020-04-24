@@ -32,6 +32,7 @@ if ($this->users->isLoggedIn()) {
 }
 else {
     message('Please log in');
+    echo '<a href="'.HTTP_HOME.'">Back to Home</a>';
     redirectTo(HTTP_HOST.'/accounts/login.html');
 }
 echo '</ul>';
